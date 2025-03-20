@@ -15,11 +15,11 @@ export interface Board {
 
 export interface BoardsListResponse {
   data: Board[];
+  total: number;
   pagination: {
     hasMore: boolean;
     cursor: string | null;
   };
-  
 }
 
 export interface BoardDetails {

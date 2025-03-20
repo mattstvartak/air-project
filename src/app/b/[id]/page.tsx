@@ -10,7 +10,7 @@ import { useParams } from 'next/navigation';
 import { Breadcrumb } from '@/components/ui/breadcrumb';
 import { useBoardDetails } from '@/hooks/useBoardDetails';
 
-export default function BoardPage() {
+const BoardPage = () => {
   // Board states
   const [childBoards, setChildBoards] = useState<Board[]>([]);
   const [isBoardsLoading, setBoardsLoading] = useState(true);
@@ -146,4 +146,6 @@ export default function BoardPage() {
       </div>
     </div>
   );
-} 
+};
+
+export default BoardPage; 

@@ -20,12 +20,13 @@ function Gallery({ shortId, defaultBoardId }: GalleryProps) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const [totalAssets, setTotalAssets] = useState(0);
+  const [cursor, setCursor] = useState<string | null>(null);
 
   useEffect(() => {
     const loadBoards = async () => {
       try {
         const response = await fetchBoards();
-        const boards = response.data.boards || [];
+        const boards = response.data || [];
         setBoards(boards);
       } catch (error) {
         console.error('Error loading boards:', error);
@@ -41,7 +42,8 @@ function Gallery({ shortId, defaultBoardId }: GalleryProps) {
       try {
         const response = await fetchAssets({ cursor: null, boardId: selectedBoardId });
         setAssets(response.data.clips);
-        setTotalAssets(response.total || 0);
+        setTotalAssets(response.data.total || 0);
+        setCursor(response.pagination?.cursor || null);
       } catch (error) {
         console.error('Error loading assets:', error);
       } finally {
@@ -65,8 +67,17 @@ function Gallery({ shortId, defaultBoardId }: GalleryProps) {
     }
   };
 
-  const handleLoadMoreAssets = (newAssets: Clip[]) => {
-    setAssets(prev => [...prev, ...newAssets]);
+  const handleLoadMoreAssets = async () => {
+    if (!cursor) return;
+    try {
+      const response = await fetchAssets({ cursor, boardId: selectedBoardId });
+      if (response.data.clips) {
+        setAssets(prev => [...prev, ...response.data.clips]);
+        setCursor(response.pagination?.cursor || null);
+      }
+    } catch (error) {
+      console.error('Error loading more assets:', error);
+    }
   };
 
   if (loading) {
