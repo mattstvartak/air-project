@@ -8,28 +8,28 @@ export function ContentMedia({
   thumbnailUrl,
   previewVideoUrl,
   videoRef,
-  duration
+  duration,
 }: ContentMediaProps) {
   return (
     <>
       {/* Background media */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0 m-[7px]">
         {isVideo && isHovered && previewVideoUrl ? (
           <video
             ref={videoRef}
             src={previewVideoUrl}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 rounded-sm w-full h-full object-cover"
             loop
             muted
             playsInline
           />
         ) : thumbnailUrl ? (
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          <div
+            className="absolute inset-0 rounded-sm bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: `url(${thumbnailUrl})` }}
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-gray-400">
+          <div className="absolute inset-0 rounded-sm flex items-center justify-center text-gray-400">
             No Preview
           </div>
         )}
@@ -37,10 +37,11 @@ export function ContentMedia({
 
       {/* Duration badge for video assets */}
       {isVideo && duration && (
-        <div className={`absolute top-2 right-2 px-1.5 py-0.5 bg-black/60 rounded text-white text-xs transition-opacity duration-200 ${showOverlay ? 'opacity-0' : 'opacity-100'}`}>
+        <div
+          className={`absolute bottom-3 right-3 px-1.5 py-0.5 bg-black/60 rounded text-white text-xs transition-opacity duration-200 ${showOverlay ? "opacity-0" : "opacity-100"}`}>
           {formatDuration(duration)}
         </div>
       )}
     </>
   );
-} 
+}
