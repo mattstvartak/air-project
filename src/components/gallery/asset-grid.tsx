@@ -1,17 +1,24 @@
-'use client';
+"use client";
 
-import { Clip } from '@/app/api/clips';
-import { useCallback } from 'react';
-import { List, WindowScroller } from 'react-virtualized';
-import 'react-virtualized/styles.css';
-import { useResponsiveGrid } from '@/hooks/useResponsiveGrid';
-import { useLoadMore } from '@/hooks/useLoadMore';
-import { useImageLoader } from '@/hooks/useImageLoader';
-import { AssetRow } from './asset-row';
-import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { AssetGridProps } from '@/types';
+import { Clip } from "@/app/api/clips";
+import { useCallback } from "react";
+import { List, WindowScroller } from "react-virtualized";
+import "react-virtualized/styles.css";
+import { useResponsiveGrid } from "@/hooks/useResponsiveGrid";
+import { useLoadMore } from "@/hooks/useLoadMore";
+import { useImageLoader } from "@/hooks/useImageLoader";
+import { AssetRow } from "./asset-row";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { AssetGridProps } from "@/types";
 
-function AssetGrid({ assets, onAssetDoubleClick, boardId, onLoadMore }: AssetGridProps) {
+function AssetGrid({
+  assets,
+  onAssetDoubleClick,
+  boardId,
+  onLoadMore,
+  selectedAssetId,
+  onAssetSelect,
+}: AssetGridProps) {
   // Use our custom hooks
   const { itemsPerRow, containerRef } = useResponsiveGrid();
   // Convert onLoadMore to return a Promise
@@ -26,25 +33,47 @@ function AssetGrid({ assets, onAssetDoubleClick, boardId, onLoadMore }: AssetGri
   const ITEM_HEIGHT = 240;
   const GAP = 16; // gap-4
 
-  const rowRenderer = useCallback(({ index, key, style }: { index: number; key: string; style: React.CSSProperties }) => {
-    const startIdx = index * itemsPerRow;
-    const rowAssets = assets.slice(startIdx, startIdx + itemsPerRow);
+  const rowRenderer = useCallback(
+    ({
+      index,
+      key,
+      style,
+    }: {
+      index: number;
+      key: string;
+      style: React.CSSProperties;
+    }) => {
+      const startIdx = index * itemsPerRow;
+      const rowAssets = assets.slice(startIdx, startIdx + itemsPerRow);
 
-    if (index === Math.floor(assets.length / itemsPerRow) - 2) {
-      requestIdleCallback(() => loadMore());
-    }
+      if (index === Math.floor(assets.length / itemsPerRow) - 2) {
+        requestIdleCallback(() => loadMore());
+      }
 
-    return (
-      <AssetRow
-        key={key}
-        assets={rowAssets}
-        style={{ ...style, height: ITEM_HEIGHT }}
-        onAssetDoubleClick={onAssetDoubleClick}
-        onImageLoad={handleImageLoad}
-        isImageLoaded={isImageLoaded}
-      />
-    );
-  }, [assets, itemsPerRow, loadMore, onAssetDoubleClick, handleImageLoad, isImageLoaded]);
+      return (
+        <AssetRow
+          key={key}
+          assets={rowAssets}
+          style={{ ...style, height: ITEM_HEIGHT }}
+          onAssetDoubleClick={onAssetDoubleClick}
+          onImageLoad={handleImageLoad}
+          isImageLoaded={isImageLoaded}
+          selectedAssetId={selectedAssetId}
+          onAssetSelect={onAssetSelect}
+        />
+      );
+    },
+    [
+      assets,
+      itemsPerRow,
+      loadMore,
+      onAssetDoubleClick,
+      handleImageLoad,
+      isImageLoaded,
+      selectedAssetId,
+      onAssetSelect,
+    ]
+  );
 
   const rowCount = Math.ceil(assets.length / itemsPerRow);
 
@@ -66,7 +95,7 @@ function AssetGrid({ assets, onAssetDoubleClick, boardId, onLoadMore }: AssetGri
           />
         )}
       </WindowScroller>
-      
+
       {isLoading && (
         <div className="h-16">
           <LoadingSpinner />

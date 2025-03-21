@@ -3,9 +3,5 @@ export default function BoardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <main className="min-h-screen bg-white">
-      {children}
-    </main>
-  );
-} 
+  return <main className="bg-white">{children}</main>;
+}

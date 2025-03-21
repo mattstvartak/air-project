@@ -75,6 +75,8 @@ export interface AssetItemProps {
   onAssetDoubleClick: (assetId: string) => void;
   onImageLoad: (assetId: string) => void;
   isImageLoaded: boolean;
+  isSelected: boolean;
+  onSelect: () => void;
 }
 
 export interface AssetRowProps {
@@ -83,6 +85,8 @@ export interface AssetRowProps {
   onAssetDoubleClick: (assetId: string) => void;
   onImageLoad: (assetId: string) => void;
   isImageLoaded: (assetId: string) => boolean;
+  selectedAssetId: string | null;
+  onAssetSelect: (assetId: string | null) => void;
 }
 
 export interface AssetGridProps {
@@ -90,6 +94,8 @@ export interface AssetGridProps {
   onAssetDoubleClick: (assetId: string) => void;
   boardId: string;
   onLoadMore: () => void;
+  selectedAssetId: string | null;
+  onAssetSelect: (assetId: string | null) => void;
 }
 
 export interface ContentBlockProps {
@@ -104,6 +110,8 @@ export interface ContentBlockProps {
   metadata?: AssetMetadata;
   onImageLoad?: () => void;
   isImageLoaded?: boolean;
+  isSelected?: boolean;
+  onClick?: () => void;
 }
 
 export interface ContentMediaProps {

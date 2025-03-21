@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import { useVideoPreview } from "@/hooks/useVideoPreview";
 import { useHoverState } from "@/hooks/useHoverState";
 import { ContentOverlay } from "./content-overlay";
@@ -16,40 +16,53 @@ export function ContentBlock({
   menuItems,
   metadata,
   onImageLoad,
-  isImageLoaded
+  isImageLoaded,
+  isSelected = false,
+  onClick,
 }: ContentBlockProps) {
-  const { 
-    isHovered, 
-    isMenuOpen, 
-    setIsMenuOpen, 
-    showOverlay, 
-    handleMouseEnter: baseHandleMouseEnter, 
-    handleMouseLeave: baseHandleMouseLeave 
-  } = useHoverState();
-  
-  const isVideo = type === 'asset' && metadata?.assetType === 'video';
-  const { videoRef, handleVideoEnter, handleVideoLeave } = useVideoPreview();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const isVideo = type === "asset" && metadata?.assetType === "video";
 
   const handleMouseEnter = useCallback(() => {
-    baseHandleMouseEnter();
-    handleVideoEnter(isVideo, previewVideoUrl);
-    if (onImageLoad && !isImageLoaded) {
-      onImageLoad();
+    setIsHovered(true);
+    if (isVideo && videoRef.current) {
+      videoRef.current.play();
     }
-  }, [baseHandleMouseEnter, isVideo, previewVideoUrl, handleVideoEnter, onImageLoad, isImageLoaded]);
+  }, [isVideo]);
 
   const handleMouseLeave = useCallback(() => {
-    baseHandleMouseLeave();
-    handleVideoLeave();
-  }, [baseHandleMouseLeave, handleVideoLeave]);
+    setIsHovered(false);
+    if (isVideo && videoRef.current && !isSelected) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  }, [isVideo, isSelected]);
+
+  const showOverlay = isHovered || isMenuOpen || isSelected;
+
+  // Effect to handle video playback based on selection
+  useEffect(() => {
+    if (isVideo && videoRef.current) {
+      if (isHovered) {
+        videoRef.current.play();
+      } else if (!isHovered) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+    }
+  }, [isVideo, isHovered]);
 
   return (
     <div
-      className="relative cursor-pointer bg-gray-100 rounded-md overflow-hidden h-full"
+      className={`relative cursor-pointer rounded-md overflow-hidden h-full transition-all duration-200 ${
+        isSelected || isHovered ? "bg-gray-100" : ""
+      } ${isSelected ? "ring-2 ring-blue-600" : ""}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onDoubleClick={onDoubleClick}
-    >
+      onClick={onClick}>
       <ContentMedia
         isVideo={isVideo}
         isHovered={isHovered}
@@ -71,4 +84,4 @@ export function ContentBlock({
       />
     </div>
   );
-} 
+}

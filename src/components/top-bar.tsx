@@ -1,9 +1,13 @@
 import Image from "next/image";
 
-const TopBar = () => {
+interface TopBarProps {
+  className?: string;
+}
+
+const TopBar = ({ className }: TopBarProps) => {
   return (
     <div
-      className="relative flex h-14 items-center justify-between bg-grey-3"
+      className={`relative flex h-14 items-center justify-between bg-[var(--colors-grey3)] px-3 ${className || ""}`}
       data-testid="PUBLIC_TOP_BAR">
       <div>
         <div
@@ -20,20 +24,18 @@ const TopBar = () => {
               height={32}
             />
           </div>
-          <div
-            className="truncate font-medium text-grey-10 text-16"
-            data-testid="WORKSPACE_NAME">
+          <div className="font-medium text-gray-600 text-base">
             Restaurant Stock
           </div>
         </div>
       </div>
       <div className="flex items-center gap-4">
-        <button className="cursor-pointer px-0.5 text-14 font-semibold text-grey-10 hover:underline">
+        <button className="cursor-pointer px-0.5 text-sm font-semibold text-gray-600 hover:underline">
           Sign up
         </button>
         <a href="/">
           <svg
-            className="w-[48px] text-blue-9"
+            className="w-[48px] text-blue-600"
             data-testid="PUBLIC_TOP_BAR_LOGO"
             fill="currentColor"
             aria-hidden="true"

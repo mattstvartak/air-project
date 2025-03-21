@@ -1,19 +1,18 @@
-import { Clip } from '@/app/api/clips';
-import { AssetItem } from './asset-item';
-import { AssetRowProps } from '@/types';
+import { Clip } from "@/app/api/clips";
+import { AssetItem } from "./asset-item";
+import { AssetRowProps } from "@/types";
 
 export function AssetRow({
   assets,
   style,
   onAssetDoubleClick,
   onImageLoad,
-  isImageLoaded
+  isImageLoaded,
+  selectedAssetId,
+  onAssetSelect,
 }: AssetRowProps) {
   return (
-    <div 
-      className="flex gap-4 mb-4"
-      style={style}
-    >
+    <div className="flex gap-x-2 gap-y-0 p-1" style={style}>
       {assets.map((asset) => (
         <AssetItem
           key={asset.id}
@@ -21,8 +20,10 @@ export function AssetRow({
           onAssetDoubleClick={onAssetDoubleClick}
           onImageLoad={onImageLoad}
           isImageLoaded={isImageLoaded(asset.id)}
+          isSelected={asset.id === selectedAssetId}
+          onSelect={() => onAssetSelect(asset.id)}
         />
       ))}
     </div>
   );
-} 
+}

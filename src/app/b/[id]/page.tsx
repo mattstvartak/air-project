@@ -22,6 +22,7 @@ const BoardPage = () => {
   const [totalAssets, setTotalAssets] = useState(0);
   const [isAssetsLoading, setAssetsLoading] = useState(true);
   const [cursor, setCursor] = useState<string | null>(null);
+  const [selectedAssetId, setSelectedAssetId] = useState<string | null>(null);
 
   const router = useRouter();
   const params = useParams();
@@ -86,75 +87,82 @@ const BoardPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="sticky top-0 z-10 px-3">
-        <TopBar />
-        <SearchBar />
-        <h1 className="text-3xl font-bold">
-          {currentBoard?.title || "Air Branded Boards"}
-        </h1>
-        <p className="text-sm text-gray-500">With a bunch of stock photos!</p>
-      </div>
-      <div className="p-6 max-w-[2000px] mx-auto">
-        {/* Header Section */}
-        <div className="mb-8 space-y-4">
-          <Breadcrumb boardId={boardId} />
+    <>
+      <TopBar className="sticky top-0 z-11" />
+      <SearchBar className="sticky top-[56px] z-11 bg-white pt-4" />
+      <div className="z-10 bg-white pb-3 relative">
+        <div className="flex w-full flex-col items-start gap-1 px-[48px]">
+          <h1 className="my-[6px] mr-4 break-words text-2xl font-semibold text-pigeon-700">
+            {currentBoard?.title || "Air Branded Boards"}
+          </h1>
+          <p className="text-sm text-gray-500 mt-0.5">
+            With a bunch of stock photos!
+          </p>
         </div>
-
-        {/* Child Boards Section */}
-        {childBoards.length > 0 && (
-          <div className="space-y-4 mb-8">
-            <h2 className="text-[12px] font-semibold flex items-baseline gap-2 uppercase tracking-wide">
-              Boards
-              <span className="text-sm text-gray-500">
-                ({childBoards.length})
-              </span>
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {childBoards.map((board) => (
-                <BoardBlock
-                  key={board.id}
-                  id={board.id}
-                  title={board.title}
-                  thumbnailUrl={board.thumbnails?.[0]}
-                  onDoubleClick={() => router.push(`/b/${board.id}`)}
-                />
-              ))}
+      </div>
+      <div className="border-b border-gray-200 border-b-[1px] border-b-solid sticky flex top-[125px] z-9 bg-white pb-5 px-[48px] mt-[-30px] pt-2">
+        <Breadcrumb boardId={boardId} />
+        <div>test</div>
+      </div>
+      <div className="bg-white">
+        <div className="p-6 max-w-[2000px] mx-auto bg-white">
+          {/* Child Boards Section */}
+          {childBoards.length > 0 && (
+            <div className="space-y-4 mb-8">
+              <h2 className="text-[12px] font-semibold flex items-baseline gap-2 uppercase tracking-wide">
+                Boards
+                <span className="text-sm text-gray-500">
+                  ({childBoards.length})
+                </span>
+              </h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                {childBoards.map((board) => (
+                  <BoardBlock
+                    key={board.id}
+                    id={board.id}
+                    title={board.title}
+                    thumbnailUrl={board.thumbnails?.[0]}
+                    onDoubleClick={() => router.push(`/b/${board.id}`)}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {/* Assets Section */}
-        <div className="space-y-4">
-          <h2 className="text-[12px] font-semibold flex items-baseline gap-2 uppercase tracking-wide">
-            Assets
-            <span className="text-sm text-gray-500">({totalAssets})</span>
-          </h2>
-          <AssetGrid
-            assets={assets}
-            onAssetDoubleClick={(assetId) => {
-              const asset = assets.find((a) => a.id === assetId);
-              if (asset && asset.boardCount && asset.boardCount > 0) {
-                router.push(`/b/${boardId}`);
-              }
-            }}
-            boardId={boardId}
-            onLoadMore={async () => {
-              if (!cursor) return;
-              try {
-                const response = await fetchAssets({ cursor, boardId });
-                if (response.data.clips) {
-                  setAssets((prev) => [...prev, ...response.data.clips]);
-                  setCursor(response.pagination?.cursor || null);
+          {/* Assets Section */}
+          <div className="space-y-4">
+            <h2 className="text-[12px] font-semibold flex items-baseline gap-2 uppercase tracking-wide">
+              Assets
+              <span className="text-sm text-gray-500">({totalAssets})</span>
+            </h2>
+            <AssetGrid
+              assets={assets}
+              onAssetDoubleClick={(assetId) => {
+                const asset = assets.find((a) => a.id === assetId);
+                if (asset && asset.boardCount && asset.boardCount > 0) {
+                  router.push(`/b/${boardId}`);
                 }
-              } catch (error) {
-                console.error("Error loading more assets:", error);
-              }
-            }}
-          />
+              }}
+              boardId={boardId}
+              selectedAssetId={selectedAssetId}
+              onAssetSelect={setSelectedAssetId}
+              onLoadMore={async () => {
+                if (!cursor) return;
+                try {
+                  const response = await fetchAssets({ cursor, boardId });
+                  if (response.data.clips) {
+                    setAssets((prev) => [...prev, ...response.data.clips]);
+                    setCursor(response.pagination?.cursor || null);
+                  }
+                } catch (error) {
+                  console.error("Error loading more assets:", error);
+                }
+              }}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
