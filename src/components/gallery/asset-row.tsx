@@ -12,7 +12,7 @@ export function AssetRow({
   onAssetSelect,
 }: AssetRowProps) {
   return (
-    <div className="flex gap-x-2 gap-y-0 p-1" style={style}>
+    <div className="flex gap-4 pt-1 px-1" style={style}>
       {assets.map((asset) => (
         <AssetItem
           key={asset.id}

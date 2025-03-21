@@ -16,10 +16,11 @@ export function ContentOverlay({
   setIsMenuOpen,
   menuItems,
   type,
-  metadata
+  metadata,
 }: ContentOverlayProps) {
   return (
-    <div className={`absolute inset-0 transition-opacity duration-200 ${showOverlay ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`absolute inset-0 transition-opacity duration-200 ${showOverlay ? "opacity-100" : "opacity-0"}`}>
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent" />
 
@@ -27,11 +28,10 @@ export function ContentOverlay({
       {menuItems && menuItems.length > 0 && (
         <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <DropdownMenuTrigger asChild>
-            <Button 
-              variant="ghost" 
+            <Button
+              variant="ghost"
               size="icon"
-              className={`absolute top-2 right-2 h-8 w-8 bg-black/60 hover:bg-black/80 text-white transition-opacity duration-200 ${type === 'board' ? (showOverlay ? 'opacity-100' : 'opacity-0') : ''}`}
-            >
+              className={`absolute top-3 right-3 h-8 w-8 bg-black/60 hover:bg-black/80 text-white transition-opacity duration-200 ${type === "board" ? (showOverlay ? "opacity-100" : "opacity-0") : ""}`}>
               <MoreHorizontal className="h-4 w-4" />
               <span className="sr-only">Open menu</span>
             </Button>
@@ -49,12 +49,12 @@ export function ContentOverlay({
 
       {/* Content info */}
       <div className="absolute bottom-0 left-0 right-0 p-3 text-white">
-        <div className="text-sm font-medium truncate mb-0.5">
-          {title}
-        </div>
-        {type === 'asset' && metadata && (
+        <div className="text-sm font-medium truncate mb-0.5">{title}</div>
+        {type === "asset" && metadata && (
           <div className="text-xs text-white/80 flex items-center gap-1.5">
-            {metadata.fileType && <span className="uppercase">{metadata.fileType}</span>}
+            {metadata.fileType && (
+              <span className="uppercase">{metadata.fileType}</span>
+            )}
             {metadata.size && (
               <>
                 <span className="w-0.5 h-0.5 bg-white/60 rounded-full" />
@@ -64,7 +64,9 @@ export function ContentOverlay({
             {metadata.dimensions && (
               <>
                 <span className="w-0.5 h-0.5 bg-white/60 rounded-full" />
-                <span>{metadata.dimensions.width} × {metadata.dimensions.height}</span>
+                <span>
+                  {metadata.dimensions.width} × {metadata.dimensions.height}
+                </span>
               </>
             )}
           </div>
@@ -72,4 +74,4 @@ export function ContentOverlay({
       </div>
     </div>
   );
-} 
+}

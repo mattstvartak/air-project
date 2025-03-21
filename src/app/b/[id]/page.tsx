@@ -145,7 +145,9 @@ const BoardPage = () => {
               }}
               boardId={boardId}
               selectedAssetId={selectedAssetId}
-              onAssetSelect={setSelectedAssetId}
+              onAssetSelect={(assetId) =>
+                setSelectedAssetId(assetId === selectedAssetId ? null : assetId)
+              }
               onLoadMore={async () => {
                 if (!cursor) return;
                 try {

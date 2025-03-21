@@ -4,6 +4,12 @@ import { useHoverState } from "@/hooks/useHoverState";
 import { ContentOverlay } from "./content-overlay";
 import { ContentMedia } from "./content-media";
 import { ContentBlockProps } from "@/types";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 export function ContentBlock({
   type,
@@ -55,33 +61,47 @@ export function ContentBlock({
   }, [isVideo, isHovered]);
 
   return (
-    <div
-      className={`relative cursor-pointer rounded-md overflow-hidden h-full transition-all duration-200 ${
-        isSelected || isHovered ? "bg-gray-100" : ""
-      } ${isSelected ? "ring-2 ring-blue-600" : ""}`}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onDoubleClick={onDoubleClick}
-      onClick={onClick}>
-      <ContentMedia
-        isVideo={isVideo}
-        isHovered={isHovered}
-        showOverlay={showOverlay}
-        thumbnailUrl={thumbnailUrl}
-        previewVideoUrl={previewVideoUrl}
-        videoRef={videoRef}
-        duration={metadata?.duration}
-      />
+    <ContextMenu>
+      <ContextMenuTrigger>
+        <div
+          className={`relative cursor-pointer rounded-md overflow-hidden h-full transition-all duration-200 ${
+            isSelected || isHovered ? "bg-gray-100" : ""
+          } ${isSelected ? "ring-2 ring-blue-600" : ""}`}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onDoubleClick={onDoubleClick}
+          onClick={onClick}>
+          <ContentMedia
+            isVideo={isVideo}
+            isHovered={isHovered}
+            showOverlay={showOverlay}
+            thumbnailUrl={thumbnailUrl}
+            previewVideoUrl={previewVideoUrl}
+            videoRef={videoRef}
+            duration={metadata?.duration}
+          />
 
-      <ContentOverlay
-        title={title}
-        showOverlay={showOverlay}
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-        menuItems={menuItems}
-        type={type}
-        metadata={metadata}
-      />
-    </div>
+          <ContentOverlay
+            title={title}
+            showOverlay={showOverlay}
+            isMenuOpen={isMenuOpen}
+            setIsMenuOpen={setIsMenuOpen}
+            menuItems={menuItems}
+            type={type}
+            metadata={metadata}
+          />
+        </div>
+      </ContextMenuTrigger>
+      {menuItems && menuItems.length > 0 && (
+        <ContextMenuContent className="w-48">
+          {menuItems.map((item, index) => (
+            <ContextMenuItem key={index} onClick={item.onClick}>
+              {item.icon}
+              <span>{item.label}</span>
+            </ContextMenuItem>
+          ))}
+        </ContextMenuContent>
+      )}
+    </ContextMenu>
   );
 }

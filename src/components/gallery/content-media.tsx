@@ -38,7 +38,7 @@ export function ContentMedia({
       {/* Duration badge for video assets */}
       {isVideo && duration && (
         <div
-          className={`absolute top-2 right-2 px-1.5 py-0.5 bg-black/60 rounded text-white text-xs transition-opacity duration-200 ${showOverlay ? "opacity-0" : "opacity-100"}`}>
+          className={`absolute bottom-3 right-3 px-1.5 py-0.5 bg-black/60 rounded text-white text-xs transition-opacity duration-200 ${showOverlay ? "opacity-0" : "opacity-100"}`}>
           {formatDuration(duration)}
         </div>
       )}
